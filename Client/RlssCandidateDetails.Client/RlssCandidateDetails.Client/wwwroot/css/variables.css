@@ -1,0 +1,11 @@
+:root {
+  --color-purple: #3a3270;
+  --color-purple-lighten: #37275e;
+  --color-purple-darken: #1f1c3d;
+  --page-header-background-color: var(--color-purpule);
+  --button-background-color: var(--color-purple);
+  --button-hover-background-color: var(--color-purple-lighten);
+  --button-active-background-color: var(--color-purple-darken);
+  --page-default-font-color: white;
+  --page-default-font-size: 12pt;
+}
