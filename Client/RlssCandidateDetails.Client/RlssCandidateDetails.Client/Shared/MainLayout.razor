@@ -1,5 +1,5 @@
 ﻿@inherits LayoutComponentBase
-
+@using RlssCandidateDetails.Client.Classes.RenderFragments;
 
 <HeadContent>
     <link href="css/variables.css?@VersionNumber" rel="stylesheet" />
@@ -8,16 +8,21 @@
 <div class="page">
 
 
-    
+    <header>
+        <span>RLSS</span>
+        <h1>@HeaderTitle</h1>
+    </header>
 
 
     <main>
-        
-        <article>
-            @Body
-        </article>
-        
+        <!-- Pass an instance of this Mainlayout to child components so they have access to MainLayout-->
+        <CascadingValue Value="this">
+            <article>
+                @Body
+            </article>
+        </CascadingValue>
     </main>
+
 </div>
 
 @code
@@ -25,5 +30,42 @@
     public string VersionNumber = "1.0.0.0";
 
 
+    #region CodeFragment
+    //////////////////////////////////////////////////////////////////////
+    // Start - Code Fragment
+    [Parameter]
+    // This is the Name we have the render fragment in the above html code
+    public RenderFragment? HeaderTitle
+    { 
+        get => _mainLayoutFragment?.HeaderTitle; 
+        set { /*_mainLayoutFragment.HeaderTitle = value;*/ }
+    }
+    // This will hold an instance of the MainLayoutFragment class we created in Classes/RenderFragments/MainlayoutFragments.cs
+    // It will get inishzlied when InishalizeLayoutFragment is called.
+    // InishalizeLayoutFragment gets called from MainlayoutFragments.OnInitialized().
+    // An instance of mainLayoutFragments gets created in the child component, in our case this is Index.razor where the <MainLayoutFragments /> tag is
+    MainLayoutFragments _mainLayoutFragment;
+
+    /// <summary>
+    /// passes in an reference to MainLayoutFragemnts and sets this._mainLayoutFragment to that instance
+    /// </summary>
+    /// <param name="InishalizedLayoutFragment"></param>
+    public void InishalizeLayoutFragment(MainLayoutFragments InishalizedLayoutFragment)
+    {
+        this._mainLayoutFragment = InishalizedLayoutFragment;   
+    }
+
+    /// <summary>
+    /// Called From _mainLayoutFragment in the function _mainLayoutFragment.UpdateLayout(). 
+    /// Calling this function will force a UI Update and render our Fragment of code that was set in the child component
+    /// </summary>
+    public void UpddateUI()
+    {
+        // proteced method so can't be called from MainLayoutFragments.cs so we have to expose it with a method.
+        this.StateHasChanged();
+    }
+    // End - Code Fragment
+    ////////////////////////////////////////////////////////////////////
+    #endregion
     
 }
