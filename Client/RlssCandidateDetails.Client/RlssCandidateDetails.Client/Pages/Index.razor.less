@@ -1,0 +1,37 @@
+﻿//@import "../wwwroot/css/variables.less";
+
+
+
+#home-menu {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 20vh;
+
+    > button {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 3vw;
+        color: var(--page-default-font-color);
+        background-color: var(--button-background-color);
+        width: 25vw;
+        height: 25vw;
+        cursor: pointer;
+        user-select: none;
+        border-radius: 20px;
+
+
+        &:hover {
+            background-color: var(--button-hover-background-color);
+        }
+
+        &:active {
+            background-color: var(--button-active-background-color);
+        }
+
+        > span {
+            user-select: none;
+        }
+    }
+}
