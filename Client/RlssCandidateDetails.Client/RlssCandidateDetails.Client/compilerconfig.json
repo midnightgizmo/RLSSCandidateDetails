@@ -1,14 +1,32 @@
-﻿[
+[
   {
     "outputFile": "Pages/Index.razor.css",
-    "inputFile": "Pages/Index.razor.less"
+    "inputFile": "Pages/Index.razor.less",
+    "sourceMap": false,
+    "useNodeSass": false
   },
   {
     "outputFile": "wwwroot/css/app.css",
-    "inputFile": "wwwroot/css/app.less"
+    "inputFile": "wwwroot/css/app.less",
+    "sourceMap": false,
+    "useNodeSass": false
   },
   {
     "outputFile": "Shared/MainLayout.razor.css",
-    "inputFile": "Shared/MainLayout.razor.less"
+    "inputFile": "Shared/MainLayout.razor.less",
+    "sourceMap": false,
+    "useNodeSass": false
+  },
+  {
+    "outputFile": "Pages/Candidates/Candidates.razor.css",
+    "inputFile": "Pages/Candidates/Candidates.razor.less",
+    "sourceMap": false,
+    "useNodeSass": false
+  },
+  {
+    "outputFile": "wwwroot/css/variables.css",
+    "inputFile": "wwwroot/css/variables.less",
+    "sourceMap": false,
+    "useNodeSass": false
   }
 ]

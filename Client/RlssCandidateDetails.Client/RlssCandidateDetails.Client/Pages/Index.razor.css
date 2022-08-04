@@ -1,10 +1,10 @@
-﻿#home-menu {
+﻿.home-menu {
   display: flex;
   align-items: center;
   justify-content: center;
   margin-top: 20vh;
 }
-#home-menu > button {
+.home-menu > button {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -17,12 +17,12 @@
   user-select: none;
   border-radius: 20px;
 }
-#home-menu > button:hover {
+.home-menu > button:hover {
   background-color: var(--button-hover-background-color);
 }
-#home-menu > button:active {
+.home-menu > button:active {
   background-color: var(--button-active-background-color);
 }
-#home-menu > button > span {
+.home-menu > button > span {
   user-select: none;
 }

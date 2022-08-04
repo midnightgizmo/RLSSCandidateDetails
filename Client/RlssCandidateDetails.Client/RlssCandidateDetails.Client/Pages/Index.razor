@@ -1,4 +1,6 @@
 ﻿@using RlssCandidateDetails.Client.Classes.RenderFragments;
+@inject NavigationManager NavManager;
+
 @page "/"
 
 
@@ -10,7 +12,7 @@
 	</HeaderTitle>
 </MainLayoutFragments>
 
-<section id="home-menu">
+<section class="home-menu">
 	<button @onclick="cmdCandidateMenu_Click">
 		<span>
 			Candidates
@@ -24,6 +26,7 @@
 	public void cmdCandidateMenu_Click()
 	{
 		//TODO: navigate to candidates list page
+		NavManager.NavigateTo("/candidates");
 	}
 }
 

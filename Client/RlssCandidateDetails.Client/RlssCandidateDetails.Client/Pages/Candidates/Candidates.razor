@@ -1,0 +1,94 @@
+﻿@using RlssCandidateDetails.Client.Classes.RenderFragments;
+@using RlssCandidateDetails.Client.ViewModels;
+@using RlssCandidateDetails.Client.Models;
+@page "/candidates"
+
+
+<PageTitle>Candidates</PageTitle>
+
+<MainLayoutFragments>
+	<HeaderTitle>
+		<div>Candidates</div>
+	</HeaderTitle>
+</MainLayoutFragments>
+
+<section class="candidates-page">
+
+	<!-- new Candidate-->
+	<section class="new-candidate-container">
+		<div>
+			<button>New Candidate</button>
+		</div>
+	</section>
+
+
+	<!-- List of Candidates-->
+	<section class="candidates-list-container">
+		<!-- filer the list of candidates we want to see-->
+		<div class="filter-container">
+			<header>
+				<span>Filter candidate list</span>
+			</header>
+			<EditForm Model="@_CandidatesVM" OnInvalidSubmit="Form_Submit">
+				<DataAnnotationsValidator />
+				
+				<InputText placeholder="First name" @bind-Value="_CandidatesVM.FirstNameFilter" />
+				<InputText placeholder="Surname" @bind-Value="_CandidatesVM.SurnameFilter" />
+				<InputNumber placeholder="Society Number" @bind-Value="_CandidatesVM.SocietyNumber" />
+				<button type="submit" value="Filter">Filter</button>
+				<button type="button" class="btn-reset-filter">Reset filter</button>
+			</EditForm>
+		</div>
+
+		<div class="list-candidates-inner-container">
+			<header>
+				<span>Candidates</span>
+			</header>
+
+			<div>
+				<table>
+					<thead>
+						<tr>
+							<th></th>
+							<th>Name</th>
+							<th>Society Number</th>
+							<th></th>
+						</tr>
+					</thead>
+					<tbody>
+						@foreach(Candidate aCandidate in this._CandidatesVM.CandidatesToShow)
+						{
+							<tr>
+								<td><button @onclick="() => cmdEditCandidate_Click(aCandidate)">Edit</button></td>
+								<td>@(aCandidate.FirstName + " " + aCandidate.Surname)</td>
+								<td>@aCandidate.SocietyNumber</td>
+								<td><button @onclick="() => cmdDeleteCandidate_Click(aCandidate)">Delete</button></td>
+							</tr>
+						}
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</section>
+
+</section>
+
+@code
+{
+	private CandidatesVM _CandidatesVM = new CandidatesVM();
+
+	public void Form_Submit()
+	{
+
+	}
+
+	public void cmdEditCandidate_Click(Candidate CandidateToEdit)
+	{
+
+	}
+
+	public void cmdDeleteCandidate_Click(Candidate CandidateToDelete)
+	{
+		
+	}
+}
