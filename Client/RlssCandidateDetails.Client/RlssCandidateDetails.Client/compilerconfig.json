@@ -1,32 +1,34 @@
-[
+﻿[
   {
     "outputFile": "Pages/Index.razor.css",
-    "inputFile": "Pages/Index.razor.less",
-    "sourceMap": false,
-    "useNodeSass": false
+    "inputFile": "Pages/Index.razor.less"
   },
   {
     "outputFile": "wwwroot/css/app.css",
-    "inputFile": "wwwroot/css/app.less",
-    "sourceMap": false,
-    "useNodeSass": false
+    "inputFile": "wwwroot/css/app.less"
   },
   {
     "outputFile": "Shared/MainLayout.razor.css",
-    "inputFile": "Shared/MainLayout.razor.less",
-    "sourceMap": false,
-    "useNodeSass": false
+    "inputFile": "Shared/MainLayout.razor.less"
   },
   {
     "outputFile": "Pages/Candidates/Candidates.razor.css",
-    "inputFile": "Pages/Candidates/Candidates.razor.less",
-    "sourceMap": false,
-    "useNodeSass": false
+    "inputFile": "Pages/Candidates/Candidates.razor.less"
   },
   {
     "outputFile": "wwwroot/css/variables.css",
-    "inputFile": "wwwroot/css/variables.less",
-    "sourceMap": false,
-    "useNodeSass": false
+    "inputFile": "wwwroot/css/variables.less"
+  },
+  {
+    "outputFile": "Components/CandidateDetailsComponent.razor.css",
+    "inputFile": "Components/CandidateDetailsComponent.razor.less"
+  },
+  {
+    "outputFile": "Pages/Candidates/NewCandidate.razor.css",
+    "inputFile": "Pages/Candidates/NewCandidate.razor.less"
+  },
+  {
+    "outputFile": "Pages/Candidates/EditCandidate.razor.css",
+    "inputFile": "Pages/Candidates/EditCandidate.razor.less"
   }
 ]

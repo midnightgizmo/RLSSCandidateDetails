@@ -59,8 +59,21 @@
 				grid-row-gap: 20px;
 				grid-column-gap: 20px;
 
+				@media only screen and (max-width: 600px)
+				{
+					grid-template-columns: 1fr;
+					grid-auto-rows: 40px;
+
+					> .btn-reset-filter
+					{
+						grid-column: auto !important;
+					}
+				}
+
 				> input
 				{
+					.input-default;
+					/*
 					border: none;
 					border-radius: 5px;
 					background-color: var(--input-background-color);
@@ -70,8 +83,9 @@
 					&::placeholder
 					{
 						color: var(--input-placeholder-font-color);
-					}
+					}*/
 				}
+
 				> input.invalid
 				{
 					border: 1px solid red;
@@ -116,7 +130,8 @@
 
 		> .list-candidates-inner-container
 		{
-			margin-top:30px;
+			margin-top: 30px;
+
 			> header
 			{
 				> span
@@ -126,6 +141,174 @@
 					font-weight: bold;
 					color: var(--page-subsection-font-header-color);
 					text-align: center;
+				}
+			}
+
+			> div
+			{
+				max-width: 700px;
+				margin-left: auto;
+				margin-right: auto;
+
+				> table
+				{
+					border: 0;
+					border-collapse: collapse;
+					border-spacing: 0;
+					width:100%;
+
+					thead
+					{
+						tr
+						{
+							td
+							{
+							}
+						}
+					}
+
+					tbody
+					{
+						tr
+						{
+
+
+							&:nth-child(odd)
+							{
+								background-color: var(--color-lightgray);
+							}
+
+							td
+							{
+								font-size: 1.5rem;
+								padding: 10px 20px;
+							}
+
+							td.delete-cell
+							{
+								.show
+								{
+									display: grid;
+								}
+
+								.hide
+								{
+									display: none;
+								}
+
+								> div.bin-container
+								{
+									.bin
+									{ /*
+										background-image: url('/images/svg/bin.svg');
+										background-repeat: no-repeat;
+										background-position-x: center;
+										 */
+										outline: none;
+										border: none;
+										background-color: transparent;
+										cursor: pointer;
+										display: flex;
+
+										&:focus
+										{
+											outline: 1px solid var(--color-limegreen);
+										}
+
+										svg
+										{
+											color: var(--button-background-color);
+											width: 14px;
+											height: 20px;
+											fill-rule: evenodd;
+										}
+
+
+										&:hover
+										{
+											svg
+											{
+												color: var(--button-hover-background-color);
+											}
+										}
+
+										&:active
+										{
+											svg
+											{
+												color: var(--button-active-background-color);
+											}
+										}
+									}
+								}
+
+								> div.tick-cross-container
+								{
+									//display:grid;
+									grid-template-columns: 1fr 1fr;
+									column-gap: 10px;
+
+									.tick, .cross
+									{
+										outline: none;
+										border: none;
+										background-color: transparent;
+										cursor: pointer;
+										display: flex;
+
+										&:focus
+										{
+											outline: 1px solid var(--color-limegreen);
+										}
+									}
+
+									.tick
+									{
+										display: flex;
+										color: var(--color-lightgreen);
+
+										&:hover
+										{
+											color: var(--color-lightgreen-lighten);
+										}
+
+										&:active
+										{
+											color: var(--color-lightgreen-darken);
+										}
+
+										svg
+										{
+											height: 20px;
+											width: 40px;
+										}
+									}
+
+									.cross
+									{
+										display: flex;
+										color: var(--color-red);
+
+										&:hover
+										{
+											color: var(--color-red-lighten);
+										}
+
+										&:active
+										{
+											color: var(--color-red-darken);
+										}
+
+										svg
+										{
+											height: 20px;
+											width: 40px;
+										}
+									}
+								}
+							}
+						}
+					}
 				}
 			}
 		}

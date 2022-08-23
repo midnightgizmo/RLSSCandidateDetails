@@ -1,0 +1,91 @@
+﻿@using RlssCandidateDetails.Client.ViewModels;
+<section class="candidate-details-container">
+
+	<EditForm Model="CandidateDetailsVm" OnValidSubmit="Form_ValidSubmit">
+		<DataAnnotationsValidator />
+		
+		<!-- First Name-->
+		<div>
+			<div>
+				<label for="firstName">First Name</label>
+			</div>
+			<div>
+				<InputText id="firstName"  @bind-Value="CandidateDetailsVm.FirstName"/>
+			</div>
+			<ValidationMessage For="(() => CandidateDetailsVm.FirstName)" />
+		</div>
+	
+		<!-- Surname-->
+		<div>
+			<div>
+				<label for="surname">Surname</label>
+			</div>
+			<div>
+				<InputText id="surname"  @bind-Value="CandidateDetailsVm.Surname"/>
+			</div>
+			<ValidationMessage For="(() => CandidateDetailsVm.Surname)" />
+		</div>
+
+		<!-- Society Number-->
+		<div>
+			<div>
+				<label for="societyNumber">Society Number</label>
+			</div>
+			<div>
+				<InputNumber id="societyNumber"  @bind-Value="CandidateDetailsVm.SocietyNumber"/>
+			</div>
+			<ValidationMessage For="(() => CandidateDetailsVm.SocietyNumber)" />
+		</div>
+
+		<div class="button-submit-row">
+			<div>
+				<button type="submit">@SubmitButtonText</button>
+			</div>
+		</div>
+
+	</EditForm>
+
+</section>
+
+@code 
+{
+	/// <summary>
+	/// the view model for the Edit Form (passed into us from the parent component)
+	/// </summary>
+	[Parameter]
+	public CandidateDetailsVM CandidateDetailsVm { get; set; }
+
+	/// <summary>
+	/// The text we want to display on the <button type="submit" /> (should be sent this from the parent component)
+	/// </summary>
+	[Parameter]
+	public string SubmitButtonText { get; set; } = "Add";
+
+	/// <summary>
+	/// The event we will call to let the parent component know the form is being submited
+	/// </summary>
+	[Parameter]
+	public EventCallback<CandidateDetailsVM> OnFormSubmit { get;set; }
+
+
+	/// <summary>
+	/// Called when the form is submitted
+	/// </summary>
+	public void Form_ValidSubmit()
+	{
+		OnFormSubmit.InvokeAsync(CandidateDetailsVm);
+	}
+
+	public void ClearForm()
+	{
+		this.CandidateDetailsVm.FirstName = string.Empty;
+		this.CandidateDetailsVm.Surname = string.Empty;
+		this.CandidateDetailsVm.SocietyNumber = null;
+
+
+		// for some reason the UI was not updateing so we had to force an update
+		StateHasChanged();
+	}
+
+
+}

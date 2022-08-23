@@ -1,0 +1,11 @@
+﻿BEGIN TRANSACTION;
+CREATE TABLE IF NOT EXISTS "Candidates" (
+	"Id"	INTEGER,
+	"FirstName"	TEXT,
+	"Surname"	INTEGER,
+	"SocietyNumber"	INTEGER,
+	"DateOfBirth"	TEXT,
+	PRIMARY KEY("Id" AUTOINCREMENT)
+);
+
+COMMIT;

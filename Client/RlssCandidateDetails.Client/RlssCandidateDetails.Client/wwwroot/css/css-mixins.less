@@ -30,6 +30,7 @@
     cursor: pointer;
     user-select: none;
     border-radius: 20px;
+    border:none;
 
 
     &:hover
@@ -41,4 +42,33 @@
     {
         background-color: var(--button-active-background-color);
     }
+
+    &:focus
+    {
+        outline: 1px solid var(--color-limegreen);
+    }
+}
+
+.input-default
+{
+    border: none;
+    border-radius: 5px;
+    background-color: var(--input-background-color);
+    color: var(--input-font-color);
+    font-size: 1.5rem;
+
+    &::placeholder
+    {
+        color: var(--input-placeholder-font-color);
+    }
+
+    &:focus
+    {
+        outline: 1px solid var(--color-limegreen);
+    }
+}
+
+.input-default.invalid
+{
+    border: 1px solid red;
 }

@@ -1,0 +1,178 @@
+﻿@using RlssCandidateDetails.Client.Classes.RenderFragments;
+@using RlssCandidateDetails.Client.Classes.Server;
+@using RlssCandidateDetails.Client.Components;
+@using RlssCandidateDetails.Client.Models;
+@using RlssCandidateDetails.Client.Models.Server.ResponseData;
+@using RlssCandidateDetails.Client.ViewModels;
+
+@inject NavigationManager NavManager;
+@inject HttpClient httpClient;
+
+@page "/EditCandidate/{CandidateID:int}";
+
+
+<MainLayoutFragments>
+	<HeaderTitle>
+		<div>Edit Candidate</div>
+	</HeaderTitle>
+</MainLayoutFragments>
+
+<section>
+
+
+	<svg style="visibility:hidden; width:0; height:0;">
+		 <symbol id="back-arrow" viewBox="0 0 30.76 30.76">
+				<path fill="currentColor" d="M30.76,15.38c0,8.49-6.88,15.38-15.38,15.38S0,23.87,0,15.38S6.88,0,15.38,0S30.76,6.88,30.76,15.38z M15.38,2.51
+					c-7.11,0-12.87,5.76-12.87,12.87s5.76,12.87,12.87,12.87s12.87-5.76,12.87-12.87S22.48,2.51,15.38,2.51z"/>
+				<polygon fill="currentColor" points="23.08,13.83 12.74,13.83 17.59,8.83 13.24,8.83 6.67,15.4 6.69,15.42 6.67,15.44 13.1,21.86 17.38,21.85 
+								12.78,17.08 23.08,17.08 "/>
+		 </symbol>
+	
+	</svg>
+
+
+
+	<div class="menu-back-container">
+		<a href="/candidates">
+			<div>
+				<svg>
+					<title>Back</title>
+					<use href="#back-arrow" />
+				</svg>
+				<span>Back</span>
+			</div>	
+		</a>
+	</div>
+
+	<div class="candidate-details-container">
+		<CandidateDetailsComponent @ref="_candidateDeetailsComponent" 
+								   CandidateDetailsVm="_CandidateDetailsVM" 
+								   OnFormSubmit="CandidateDetailsComponent_OnFormSubmit"
+								   SubmitButtonText="Update"/>
+
+		<div class="error-messages-container">
+			<!-- Displays any error messages we recieve from the server -->
+			@foreach (string anError in this.ErrorMessages)
+			{
+				<div>
+					<span>@anError</span>
+				</div>   
+			}
+		</div>
+	</div>
+</section>
+
+@code 
+{
+	// A reference to the CanidateDetailsComponent (form that displays users details to add or edit, in this case we are editing)
+	private CandidateDetailsComponent _candidateDeetailsComponent;
+
+	/// <summary>
+	/// The id of the candidate we want to edit (passed into us from the parent)
+	/// </summary>
+	[Parameter]
+	public int CandidateID { get; set; }
+
+	/// <summary>
+	/// View model for the CandidateDetailsComponent
+	/// </summary>
+	private CandidateDetailsVM _CandidateDetailsVM = new CandidateDetailsVM();
+
+	/// <summary>
+	/// List of errors to display if the server reports back any errors.
+	/// </summary>
+	public List<string> ErrorMessages = new List<string>();
+
+
+	/// <summary>
+	/// When all parameters have been set on the page
+	/// </summary>
+	protected async override void OnParametersSet()
+	{
+
+		// get the candidates details from the server and put the returned
+		// data into _CandidateDetailsVM
+		ServerResponseSingleCandidate responseData;
+		CandidateCommunication candidateCommunication = new CandidateCommunication(httpClient);
+		responseData = await candidateCommunication.GetSingleCandidate(CandidateID);
+
+		// if we can't find the candidate details
+		if(responseData.HasErrors)
+		{
+			// Display error message if candidate not added.
+			foreach (string error in responseData.Errors)
+				this.ErrorMessages.Add(error);
+
+			// because we are in an aysnc operation, we need to force a UI Update
+			StateHasChanged();
+			return;	
+		}
+
+		// no errors so we should have the candidate data
+		_CandidateDetailsVM.FirstName = responseData.ReturnValue.FirstName;
+		_CandidateDetailsVM.Surname = responseData.ReturnValue.Surname;
+
+		// Get the society number if there is one (there does not have to be one)
+		int SocietyNumber;
+		// If there is somthing in the Society Number property and it is a valid number
+		if ((responseData.ReturnValue.SocietyNumber.Length > 0) && (int.TryParse(responseData.ReturnValue.SocietyNumber, out SocietyNumber)) )
+			// Add the society number to the view model
+			_CandidateDetailsVM.SocietyNumber = SocietyNumber;
+
+		// because we are in an aysnc operation, we need to force a UI Update
+		StateHasChanged();
+		return;
+	}
+
+	/// <summary>
+	/// Called from _CandidateDetailsVM when the form is being submited
+	/// </summary>
+	/// <param name="canidateDetails">The new details for the candidate we want to edit</param>
+	public async void CandidateDetailsComponent_OnFormSubmit(CandidateDetailsVM canidateDetails)
+	{
+		ServerResponseSingleCandidate responseData;
+
+		// clear out any previouse server side error messages we may have had
+		this.ErrorMessages.Clear();
+
+		// send a request to the server to update the candidates details in the database
+		responseData = await this.SendUpdateRequestToServer(canidateDetails);
+
+		// were there any errors and candidate was not added to the database
+		if(responseData.HasErrors)
+		{
+			// Display error message if candidate not added.
+			foreach (string error in responseData.Errors)
+				this.ErrorMessages.Add(error);
+
+			return;	
+		}
+
+		// Candidate was added, clear the form details
+		this._candidateDeetailsComponent.ClearForm();
+
+
+
+		// if update sucseeds
+		NavManager.NavigateTo("/candidates");
+	}
+
+
+	private async Task<ServerResponseSingleCandidate> SendUpdateRequestToServer(CandidateDetailsVM candidateDetails)
+	{
+
+		// copy the details from CandidateDetails into candidate.
+		Candidate candidate = new Candidate();
+		candidate.Id = this.CandidateID;
+		candidate.FirstName = candidateDetails.FirstName;
+		candidate.Surname = candidateDetails.Surname;
+		candidate.SocietyNumber = candidateDetails.SocietyNumber.ToString();
+
+		// send off the new candidate details to the server
+		CandidateCommunication candidateCommunication = new CandidateCommunication(this.httpClient);
+		return await candidateCommunication.UpdateCandidateDetails(candidate);
+
+		
+	}
+
+}

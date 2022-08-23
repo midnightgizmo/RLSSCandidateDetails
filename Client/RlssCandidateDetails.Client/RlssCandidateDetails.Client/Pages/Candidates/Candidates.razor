@@ -1,6 +1,10 @@
 ﻿@using RlssCandidateDetails.Client.Classes.RenderFragments;
+@using RlssCandidateDetails.Client.Models.Server.ResponseData
 @using RlssCandidateDetails.Client.ViewModels;
 @using RlssCandidateDetails.Client.Models;
+@using RlssCandidateDetails.Client.Classes.Server;
+@inject HttpClient httpClient;
+
 @page "/candidates"
 
 
@@ -14,10 +18,59 @@
 
 <section class="candidates-page">
 
+	<!-- bin icon-->
+	<svg style="visibility:hidden; width:0; height:0;" >
+		<defs>
+			<style type="text/css">
+				.cls-1,.cls-2{fill-rule:evenodd;}
+				.cls-1{fill:currentColor;}
+				.cls-2{fill:currentColor;}
+			</style>
+		</defs>
+
+		<symbol id="bin-icon" viewBox="0 0 15.48 23.25">
+
+			<path class="cls-1" d="M3,8.61a.36.36,0,0,1,.12-.29,1,1,0,0,1,.51-.19.79.79,0,0,1,.51.08.34.34,0,0,1,.13.29L5.34,20.71a.39.39,0,0,1-.09.3.71.71,0,0,1-.46.21.92.92,0,0,1-.54-.12.44.44,0,0,1-.18-.28L3,8.61m8.27-.09a.38.38,0,0,1,.17-.27,1,1,0,0,1,.54-.1.81.81,0,0,1,.49.17.35.35,0,0,1,.07.31L11.47,20.84a.35.35,0,0,1-.14.28.77.77,0,0,1-.49.13,1,1,0,0,1-.5-.22.46.46,0,0,1-.14-.3ZM7,8.48a.39.39,0,0,1,.15-.28,1.08,1.08,0,0,1,.53-.15.8.8,0,0,1,.5.14.33.33,0,0,1,.1.29V20.74a.39.39,0,0,1-.12.29.73.73,0,0,1-.48.17A.89.89,0,0,1,7.2,21,.47.47,0,0,1,7,20.74ZM0,6H15.48L13.37,22.05a2.15,2.15,0,0,1-1.33.72,18.65,18.65,0,0,1-4.13.48,17.87,17.87,0,0,1-4.13-.46A4.26,4.26,0,0,1,2.08,22Z"/>
+			<path class="cls-2" d="M6.49,2.27H9a1.73,1.73,0,0,0-.4-.8,1.75,1.75,0,0,0-.86-.28A1.27,1.27,0,0,0,7,1.41a2.35,2.35,0,0,0-.5.86M1,3.27a27.23,27.23,0,0,1,4.33-.8A3.69,3.69,0,0,1,5.89.61,2.26,2.26,0,0,1,7.62,0,2.61,2.61,0,0,1,9.44.59a3.71,3.71,0,0,1,.79,1.81,29.83,29.83,0,0,1,4.43.92c.87.33.83.71.79,1.08H0C0,4,.08,3.59,1,3.27Z"/>
+		</symbol>
+	</svg>
+
+	<!-- tick icon -->
+	<svg style="visibility:hidden; width:0; height:0;">
+		<style type="text/css">
+			.st0{fill:currentColor;}
+		</style>
+
+		<symbol id="tick-icon" viewBox="0 0 10.26 11.3">
+			<path class="st0" d="M1.98,5.71l2.1,2.81C5.09,6.3,6.09,4.07,7.05,2.65C8,1.23,8.9,0.62,9.79,0l0.47,2.37
+				C9.69,3.01,9.11,3.65,8.08,5.14C7.05,6.63,5.57,8.96,4.1,11.3c-0.58-0.72-1.15-1.43-1.84-2.08C1.57,8.58,0.79,8,0,7.43L1.98,5.71"/>
+		</symbol>
+	</svg>
+
+	<!-- cross icon -->
+	<svg style="visibility:hidden; width:0; height:0;">
+		<style type="text/css">
+			.st0{fill:currentColor;}
+		</style>
+		<symbol id="cross-icon" viewBox="0 0 8.03 8.03">
+			<path class="st0" d="M5.25,4.01c0.61,0.61,1.22,1.22,1.83,1.82C7.34,6.1,7.6,6.37,7.87,6.63c0.22,0.22,0.22,0.47,0,0.69
+				C7.7,7.49,7.52,7.65,7.36,7.83c-0.23,0.25-0.51,0.25-0.76,0C5.77,7,4.93,6.17,4.1,5.33c-0.03-0.03-0.05-0.05-0.09-0.1
+				C3.99,5.27,3.97,5.3,3.94,5.32C3.1,6.17,2.26,7.01,1.41,7.86c-0.23,0.23-0.48,0.23-0.71,0C0.52,7.68,0.34,7.5,0.16,7.31
+				c-0.21-0.22-0.21-0.46,0-0.68c0.85-0.85,1.7-1.7,2.55-2.55c0.05-0.05,0.06-0.08,0-0.13C1.87,3.1,1.02,2.25,0.17,1.41
+				c-0.23-0.23-0.23-0.48,0-0.71c0.18-0.18,0.35-0.35,0.53-0.53c0.22-0.22,0.48-0.21,0.69,0c0.85,0.85,1.7,1.7,2.55,2.56
+				c0.06,0.06,0.08,0.04,0.13-0.01c0.85-0.85,1.7-1.7,2.54-2.54c0.12-0.12,0.26-0.18,0.43-0.16c0.11,0.01,0.19,0.08,0.27,0.15
+				C7.51,0.34,7.69,0.52,7.87,0.7c0.22,0.22,0.22,0.49,0,0.71c-0.75,0.75-1.5,1.5-2.25,2.25C5.5,3.77,5.38,3.89,5.25,4.01"/>
+		</symbol>
+
+	</svg>
+
+
+
+
 	<!-- new Candidate-->
 	<section class="new-candidate-container">
 		<div>
-			<button>New Candidate</button>
+			<a href="/NewCandidate">New Candidate</a>
 		</div>
 	</section>
 
@@ -29,14 +82,14 @@
 			<header>
 				<span>Filter candidate list</span>
 			</header>
-			<EditForm Model="@_CandidatesVM" OnInvalidSubmit="Form_Submit">
+			<EditForm Model="@_CandidatesVM" OnValidSubmit="FilterForm_Submit">
 				<DataAnnotationsValidator />
 				
 				<InputText placeholder="First name" @bind-Value="_CandidatesVM.FirstNameFilter" />
 				<InputText placeholder="Surname" @bind-Value="_CandidatesVM.SurnameFilter" />
 				<InputNumber placeholder="Society Number" @bind-Value="_CandidatesVM.SocietyNumber" />
-				<button type="submit" value="Filter">Filter</button>
-				<button type="button" class="btn-reset-filter">Reset filter</button>
+				<button type="submit" value="Filter">Search</button>
+				<button type="button" class="btn-reset-filter" @onclick="async () =>await cmdResetFilter_Click()">Show all Candidates</button>
 			</EditForm>
 		</div>
 
@@ -56,13 +109,41 @@
 						</tr>
 					</thead>
 					<tbody>
-						@foreach(Candidate aCandidate in this._CandidatesVM.CandidatesToShow)
+						@foreach(CandidatesVM_CandidateDeetails aCandidate in this._CandidatesVM.CandidatesToShow)
 						{
 							<tr>
-								<td><button @onclick="() => cmdEditCandidate_Click(aCandidate)">Edit</button></td>
+								<td><a href="/EditCandidate/@aCandidate.Id">Edit</a></td>
 								<td>@(aCandidate.FirstName + " " + aCandidate.Surname)</td>
 								<td>@aCandidate.SocietyNumber</td>
-								<td><button @onclick="() => cmdDeleteCandidate_Click(aCandidate)">Delete</button></td>
+								<td class="delete-cell">
+									<div class="bin-container @(aCandidate.IsDeleteButtonClicked == true ? "hide" : "show")">
+										<button class="bin" @onclick="() => cmdDeleteCandidate_Click(aCandidate)">
+											<svg>
+												<title>bin</title>
+												<use href="#bin-icon"/>
+											</svg>
+										</button>
+									</div>
+									<div class="tick-cross-container @(aCandidate.IsDeleteButtonClicked == true ? "show" : "hide")">
+										
+										<button class="tick" @onclick=" async () => await cmdDeleteCandidate_ConfirmClick(aCandidate)">
+											<svg>
+												<title>tick</title>
+												<use href="#tick-icon"/>
+											</svg>
+										</button>
+
+										<button class="cross" @onclick="() => cmdDeleteCandidate_CancelClick(aCandidate)">
+											<svg>
+												<title>cross</title>
+												<use href="#cross-icon"/>
+											</svg>
+										</button>
+
+										
+										
+									</div>
+								</td>
 							</tr>
 						}
 					</tbody>
@@ -75,20 +156,174 @@
 
 @code
 {
-	private CandidatesVM _CandidatesVM = new CandidatesVM();
+	public CandidatesVM _CandidatesVM { get; set; } = new CandidatesVM();
 
-	public void Form_Submit()
+	public Candidates()
 	{
+
+
+
+		// test data
+		/*this._CandidatesVM.CandidatesToShow.AddRange(new CandidatesVM_CandidateDeetails[]
+				{ 
+				new CandidatesVM_CandidateDeetails(){Id=1,FirstName="Bob", Surname="Smith", SocietyNumber="35874589" },
+				new CandidatesVM_CandidateDeetails(){Id=2,FirstName="Rob", Surname="Jo", SocietyNumber="35277589" }, 
+				new CandidatesVM_CandidateDeetails(){Id=3,FirstName="Samantha", Surname="Robinsen", SocietyNumber="35277501" } 
+			});*/
+	}
+
+	protected override async Task OnInitializedAsync()
+	{
+		/*
+		//ServerCommunication serverCommunication = new ServerCommunication(this.httpClient);
+		CandidateCommunication candidateCommunication = new CandidateCommunication(this.httpClient);
+		SeverResponseListofCandidates responseData;
+
+		responseData = await candidateCommunication.GetAllCandidates();
+
+		if(responseData.HasErrors)
+			{
+			// display server error message
+		return;
+		}
+
+		// convert each candidate data from the server to a CandidatesVM details and add it to the this._CandidatesVM
+		foreach(Candidate aCandidate in responseData.ReturnValue)
+			{
+			this._CandidatesVM.CandidatesToShow.Add(
+				new CandidatesVM_CandidateDeetails()
+					{
+					Id = aCandidate.Id,
+					FirstName = aCandidate.FirstName,
+					Surname = aCandidate.Surname,
+					SocietyNumber = aCandidate.SocietyNumber
+			}
+		);
+		}
+		*/
+
+		//serverCommunication.SendGetRequestToServer("Candidate/GetAllUsers");
+	}
+
+	public async void FilterForm_Submit()
+	{
+		Candidate CandidateFilterData = new Candidate();
+		List<Candidate> ListOfFilterdCandidates;
+		CandidateCommunication candidateCommunication;
+		SeverResponseListofCandidates ServerResponse;
+		// copy over the search data into a Candidate object
+		CandidateFilterData.Id = 0;
+		CandidateFilterData.FirstName = _CandidatesVM.FirstNameFilter;
+		CandidateFilterData.Surname = _CandidatesVM.SurnameFilter;
+		CandidateFilterData.SocietyNumber = _CandidatesVM.SocietyNumber == null ? string.Empty : _CandidatesVM.SocietyNumber.ToString();
+
+		candidateCommunication = new CandidateCommunication(this.httpClient);
+
+		// get a response back from the server
+		ServerResponse = await candidateCommunication.GetFilterdCandidateList(CandidateFilterData);
+
+		this._CandidatesVM.CandidatesToShow.Clear();
+
+		if(!ServerResponse.HasErrors)
+		{
+			foreach(Candidate aCandidate in ServerResponse.ReturnValue)
+				this._CandidatesVM.CandidatesToShow.Add(
+					new CandidatesVM_CandidateDeetails()
+					{
+						Id = aCandidate.Id,
+						FirstName = aCandidate.FirstName,
+						Surname = aCandidate.Surname,
+						SocietyNumber = aCandidate.SocietyNumber
+					}
+				);
+
+
+
+			StateHasChanged();
+		}
+		else
+		{
+			// display some kind of error that we were unable to perform the serach
+		}
+
 
 	}
 
-	public void cmdEditCandidate_Click(Candidate CandidateToEdit)
+	/// <summary>
+	/// When the user clicks the "Reset filter" button
+	/// </summary>
+	public async Task cmdResetFilter_Click()
 	{
+		// clear all the input controls
+		this._CandidatesVM.FirstNameFilter = string.Empty;
+		this._CandidatesVM.SurnameFilter = string.Empty;
+		this._CandidatesVM.SocietyNumber = null; // set to null because setting to zero still gives it a value
 
+		// Get a list of all candidats in database
+		await this.GetAllCandidates();
 	}
 
-	public void cmdDeleteCandidate_Click(Candidate CandidateToDelete)
+	public void cmdDeleteCandidate_Click(CandidatesVM_CandidateDeetails CandidateToDelete)
 	{
-		
+		CandidateToDelete.IsDeleteButtonClicked = true;
+	}
+
+	public async Task cmdDeleteCandidate_ConfirmClick(CandidatesVM_CandidateDeetails CandidateToDelete)
+	{
+		// send request to the server to delete the candidate from the database
+		CandidateCommunication candidateCommunication = new CandidateCommunication(this.httpClient);
+		ServerResponseDataBase ResponseData;
+
+		ResponseData = await candidateCommunication.DeleteCandidate(CandidateToDelete.Id);
+
+		if(ResponseData.HasErrors)
+		{
+
+		}
+		// no errors so remove the row from the UI
+		else
+		{
+			bool WasRemoved = this._CandidatesVM.CandidatesToShow.Remove(CandidateToDelete);
+
+			if(WasRemoved)
+			{
+
+			}
+		}
+	}
+
+	public void cmdDeleteCandidate_CancelClick(CandidatesVM_CandidateDeetails CandidateToDelete)
+	{
+		CandidateToDelete.IsDeleteButtonClicked = false;
+	}
+
+
+	private async Task GetAllCandidates()
+	{
+		CandidateCommunication candidateCommunication = new CandidateCommunication(this.httpClient);
+		SeverResponseListofCandidates responseData;
+
+		responseData = await candidateCommunication.GetAllCandidates();
+
+		if(responseData.HasErrors)
+		{
+			// display server error message
+			return;
+		}
+
+		this._CandidatesVM.CandidatesToShow.Clear();
+		// convert each candidate data from the server to a CandidatesVM details and add it to the this._CandidatesVM
+		foreach(Candidate aCandidate in responseData.ReturnValue)
+		{
+			this._CandidatesVM.CandidatesToShow.Add(
+				new CandidatesVM_CandidateDeetails()
+				{
+					Id = aCandidate.Id,
+					FirstName = aCandidate.FirstName,
+					Surname = aCandidate.Surname,
+					SocietyNumber = aCandidate.SocietyNumber
+				}
+			);
+		}
 	}
 }

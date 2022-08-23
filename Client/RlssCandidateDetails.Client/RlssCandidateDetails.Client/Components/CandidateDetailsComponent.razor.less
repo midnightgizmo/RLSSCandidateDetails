@@ -1,0 +1,73 @@
+﻿@import "../wwwroot/css/css-mixins.less";
+section.candidate-details-container
+{
+	display: grid;
+	grid-template-columns: 1fr;
+	row-gap: 40px;
+
+	::deep > form
+	{
+		display: grid;
+		grid-template-rows: 1fr;
+		row-gap: 20px;
+		max-width: 400px;
+		margin-left: auto;
+		margin-right: auto;
+
+		> div
+		{
+			display: grid;
+			grid-template-columns: 1fr 1fr;
+			column-gap: 20px;
+
+
+
+
+			> div
+			{
+				&:nth-child(1)
+				{
+					justify-self: right;
+					align-self: center;
+				}
+
+				> label
+				{
+					width: 100%;
+					display: block;
+					font-size: 1.5rem;
+				}
+
+				> input
+				{
+					.input-default;
+					width: 100%;
+					display: block;
+					font-size: 1.5rem;
+				}
+			}
+
+			> .validation-message
+			{
+				grid-column: 1 / span 2;
+				justify-self: right;
+				color: var(--color-red);
+			}
+		}
+
+		> .button-submit-row
+		{
+			> div
+			{
+				grid-column-start: 2;
+				justify-self: initial !important;
+				align-self: initial !important;
+
+				> button
+				{
+					.button-default
+				}
+			}
+		}
+	}
+}
