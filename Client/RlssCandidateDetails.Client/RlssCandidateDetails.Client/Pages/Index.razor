@@ -1,8 +1,9 @@
-﻿@using RlssCandidateDetails.Client.Classes.RenderFragments;
+﻿@using Microsoft.AspNetCore.Authorization
+@using RlssCandidateDetails.Client.Classes.RenderFragments;
 @inject NavigationManager NavManager;
 
 @page "/"
-
+@attribute [Authorize(Roles ="Admin")]
 
 <PageTitle>Index</PageTitle>
 

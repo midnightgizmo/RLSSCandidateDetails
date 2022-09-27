@@ -12,10 +12,10 @@ namespace RlssCandidateDetails.Client.Classes.Server
 	{
 		private HttpClient _HttpClient;
 		private ServerCommunication _ServerCommunication;
-		public CandidateCommunication(HttpClient httpClient)
+		public CandidateCommunication(HttpClient httpClient, AppSettings appSettings)
 		{
 			this._HttpClient = httpClient;
-			this._ServerCommunication = new ServerCommunication(this._HttpClient);
+			this._ServerCommunication = new ServerCommunication(this._HttpClient, appSettings);
 		}
 
 
@@ -122,10 +122,10 @@ namespace RlssCandidateDetails.Client.Classes.Server
 			return responseData;
 		}
 
-		public async Task<ServerResponseDataBase> DeleteCandidate(int CandidateId)
+		public async Task<ServerResponseData> DeleteCandidate(int CandidateId)
 		{
 			ServerResponse responseMessage;
-			ServerResponseDataBase responseData;
+			ServerResponseData responseData;
 			Dictionary<string, string> DataToSend = new Dictionary<string, string>();
 
 			DataToSend.Add("Id", CandidateId.ToString());
@@ -134,7 +134,7 @@ namespace RlssCandidateDetails.Client.Classes.Server
 			// request all candidates details from the server
 			responseMessage = await this._ServerCommunication.SendPostRequestToServer("Candidate/Delete", DataToSend);
 
-			responseData = ServerCommunication.ParseServerResponse<ServerResponseDataBase>(responseMessage);
+			responseData = ServerCommunication.ParseServerResponse<ServerResponseData>(responseMessage);
 
 			return responseData;
 		}

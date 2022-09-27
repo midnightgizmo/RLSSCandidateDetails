@@ -1,6 +1,8 @@
+using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using RlssCandidateDetails.Client;
+using RlssCandidateDetails.Client.Classes.Authentication;
 using RlssCandidateDetails.Client.Models;
 
 namespace RlssCandidateDetails.Client
@@ -22,6 +24,10 @@ namespace RlssCandidateDetails.Client
                 return appSettings;
 
             });
+
+            builder.Services.AddAuthorizationCore();
+            builder.Services.AddScoped<AuthenticationStateProvider, CustomAuthStateProvider>();
+
             //builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
             // Create a scoped HttpClient to use in razor pages (via @inject HttpClient Http)
             // that sets the base url baseURL. This makes it so 

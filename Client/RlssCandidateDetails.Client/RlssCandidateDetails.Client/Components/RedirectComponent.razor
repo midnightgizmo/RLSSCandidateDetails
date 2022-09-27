@@ -1,0 +1,19 @@
+﻿@inject NavigationManager _navigationManager
+
+@code {
+    /// <summary>
+    /// To use this component within a razor page, add a user statment at the top of the razor page
+    /// @using blazor.Components
+    /// Then use the componet by calling it
+    /// <RedirectComponent PageToNavigateTo="PageToNavToo" />
+    /// </summary>
+    [Parameter]
+    public string PageToNavigateTo { get; set; } = "login";
+
+    protected override async Task OnInitializedAsync()
+    {
+        // Changes the current loaded page to the selected PageToNavigateTo (defaults to login page if no parameter has been passed in)
+        _navigationManager.NavigateTo(PageToNavigateTo);
+        
+    }
+}

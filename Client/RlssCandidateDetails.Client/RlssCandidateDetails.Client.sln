@@ -5,6 +5,8 @@ VisualStudioVersion = 17.2.32630.192
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RlssCandidateDetails.Client", "RlssCandidateDetails.Client\RlssCandidateDetails.Client.csproj", "{144BF2C1-EB80-4C46-AD51-3858AA8187DF}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RlssCandidateDetails.JsonWebToken", "..\..\Server\RlssCandidateDetails.Server\RlssCandidateDetails.JsonWebToken\RlssCandidateDetails.JsonWebToken.csproj", "{C74C5547-A6C6-45C9-83A3-CB6718C8D411}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{144BF2C1-EB80-4C46-AD51-3858AA8187DF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{144BF2C1-EB80-4C46-AD51-3858AA8187DF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{144BF2C1-EB80-4C46-AD51-3858AA8187DF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C74C5547-A6C6-45C9-83A3-CB6718C8D411}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C74C5547-A6C6-45C9-83A3-CB6718C8D411}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C74C5547-A6C6-45C9-83A3-CB6718C8D411}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C74C5547-A6C6-45C9-83A3-CB6718C8D411}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

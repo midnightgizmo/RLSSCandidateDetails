@@ -1,5 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿//using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
+using RlssCandidateDetails.Server.Attributes;
 using RlssCandidateDetails.Server.ControllersLogic;
 using RlssCandidateDetails.Server.ControllersLogic.Candidate;
 using RlssCandidateDetails.Server.Models;
@@ -20,6 +22,7 @@ namespace RlssCandidateDetails.Server.Controllers
 
 
         [HttpGet]
+        [AuthorizeAttribute(AuthorizationType= AuthorizeType.Admin)]
         [Route("GetAllUsers")]
         [Produces("application/json")]
         public ControllerLogicReturnValue GetAllUsers()
@@ -34,6 +37,7 @@ namespace RlssCandidateDetails.Server.Controllers
         }
 
         [HttpPost]
+        [AuthorizeAttribute(AuthorizationType = AuthorizeType.Admin)]
         [Route("FindCandidates")]
         [Produces("application/json")]
         public ControllerLogicReturnValue FindUsers([FromForm] CandidateDetails CandidateSearchCriteria)
@@ -44,6 +48,7 @@ namespace RlssCandidateDetails.Server.Controllers
         }
 
         [HttpPost]
+        [AuthorizeAttribute(AuthorizationType = AuthorizeType.Admin)]
         [Route("GetCandidate")]
         [Produces("application/json")]
         public ControllerLogicReturnValue GetUser([FromForm]int Id)
@@ -61,6 +66,7 @@ namespace RlssCandidateDetails.Server.Controllers
         /// <param name="NewCandidate"></param>
         /// <returns></returns>
         [HttpPost]
+        [AuthorizeAttribute(AuthorizationType = AuthorizeType.Admin)]
         [Route("Insert")]
         [Produces("application/json")]
         public ControllerLogicReturnValue InsertUser([FromForm]CandidateDetails NewCandidate)
@@ -75,6 +81,7 @@ namespace RlssCandidateDetails.Server.Controllers
         /// <param name="UpdatedCandidate">The candidates updated deetails to apply to the database</param>
         /// <returns></returns>
         [HttpPost]
+        [AuthorizeAttribute(AuthorizationType = AuthorizeType.Admin)]
         [Route("Update")]
         [Produces("application/json")]
         public ControllerLogicReturnValue EditUser([FromForm] CandidateDetails UpdatedCandidate)
@@ -90,6 +97,7 @@ namespace RlssCandidateDetails.Server.Controllers
         /// <param name="Id">The id to use to look for the candidate to remove from the database</param>
         /// <returns></returns>
         [HttpPost]
+        [AuthorizeAttribute(AuthorizationType = AuthorizeType.Admin)]
         [Route("Delete")]
         [Produces("application/json")]
         public ControllerLogicReturnValue Delete([FromForm]int Id)

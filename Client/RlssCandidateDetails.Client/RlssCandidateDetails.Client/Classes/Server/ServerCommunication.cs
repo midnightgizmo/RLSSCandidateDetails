@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Components.WebAssembly.Http;
 using RlssCandidateDetails.Client.Models.Server.ResponseData;
 using System.Text.Json;
+using RlssCandidateDetails.Client.Models;
 
 namespace RlssCandidateDetails.Client.Classes.Server
 {
@@ -11,9 +12,12 @@ namespace RlssCandidateDetails.Client.Classes.Server
         /// Inishalize the class with the HttpClient
         /// </summary>
         /// <param name="httpClient">Should have its Base address to the API url location</param>
-        public ServerCommunication(HttpClient httpClient)
+        /// <param name="appSettings"></param>
+        public ServerCommunication(HttpClient httpClient, AppSettings appSettings)
         {
             this.httpClient = httpClient;
+            // might hold the jwt that we will want to send back with every request to the server
+            this.appSettings = appSettings;
         }
 
 
@@ -21,6 +25,8 @@ namespace RlssCandidateDetails.Client.Classes.Server
         /// Used to communicate with the server
         /// </summary>
         public HttpClient httpClient { get; }
+
+        public AppSettings appSettings { get; }
 
 
 
@@ -47,6 +53,9 @@ namespace RlssCandidateDetails.Client.Classes.Server
 #if DEBUG
                 requestMsg.SetBrowserRequestCredentials(BrowserRequestCredentials.Include);
 #endif
+                // adds a jwt Bearer Authorization header to request if jwt is found in appSettings
+                this.AddJwtToRequest();
+
                 // send the get request
                 httpResponseMessage = await this.httpClient.SendAsync(requestMsg);
 
@@ -85,6 +94,7 @@ namespace RlssCandidateDetails.Client.Classes.Server
                 {
                     response.ResponseMessage = reader.ReadToEnd();
                 }
+
             }
 
 
@@ -135,6 +145,9 @@ namespace RlssCandidateDetails.Client.Classes.Server
                     // been sent from the server (setCookie header). This is only needed because of CORS
                     requestMsg.SetBrowserRequestCredentials(BrowserRequestCredentials.Include);
                     //requestMsg.SetBrowserRequestMode(BrowserRequestMode.NoCors);
+
+                    // adds a jwt Bearer Authorization header to request if jwt is found in appSettings
+                    this.AddJwtToRequest();
 
                     httpResponseMessage = await this.httpClient.SendAsync(requestMsg);
                     // send a post request back to the server and get the response
@@ -191,13 +204,13 @@ namespace RlssCandidateDetails.Client.Classes.Server
 
         }
 
-        public static T ParseServerResponse<T>(ServerResponse ResponseMessage) where T : ServerResponseDataBase, new()
+        public static T ParseServerResponse<T>(ServerResponse ResponseMessage) where T : ServerResponseData, new()
 		{
             T ResponseData = new T();
             if (ResponseMessage.StatusCode == System.Net.HttpStatusCode.OK)
             {
                 ResponseData = JsonSerializer.Deserialize<T>(ResponseMessage.ResponseMessage, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
-                ResponseData.StatusCode = ResponseData.StatusCode;
+                ResponseData.StatusCode = ResponseMessage.StatusCode;
                 
             }
             // some error must of occured
@@ -217,11 +230,36 @@ namespace RlssCandidateDetails.Client.Classes.Server
 
                 ResponseData.StatusCode = ResponseMessage.StatusCode;
                 ResponseData.HasErrors = true;
+
+                switch(ResponseData.StatusCode)
+                {
+                    case System.Net.HttpStatusCode.Forbidden:
+
+                        ResponseData.Errors.Add("You do dot have access to that request");
+                        Console.WriteLine("403 Forbidden: You do not have the correct role for that request");
+                        break;
+                }
             }
 
             return ResponseData;
         }
 
+
+        /// <summary>
+        /// If JWT found in appSettings. Authorization: Bearer Header will be added
+        /// to request sent to the server with the jwt set as the value
+        /// </summary>
+        private void AddJwtToRequest()
+        {
+            // if we have a json web token, create an Authorization header of type "Bearer" and set its value as the json web token
+            if (this.appSettings.JsonWebToken != null && this.appSettings.JsonWebToken.Length > 0)
+            {
+                this.httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", this.appSettings.JsonWebToken);
+                //this.httpClient.DefaultRequestHeaders.Add("Authorization", "Bearer " + this.appSettings.JsonWebToken);
+            }
+
+            return;
+        }
 
 
     }

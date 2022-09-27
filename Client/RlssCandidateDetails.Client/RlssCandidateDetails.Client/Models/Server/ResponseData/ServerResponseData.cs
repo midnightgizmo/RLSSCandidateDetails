@@ -1,6 +1,6 @@
 ﻿namespace RlssCandidateDetails.Client.Models.Server.ResponseData
 {
-	public class ServerResponseDataBase
+	public class ServerResponseData
 	{
 		public System.Net.HttpStatusCode StatusCode { get; set; }
 		public object ReturnValue { get; set; } = null;

@@ -16,6 +16,11 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\RlssCandidateDetails.JsonWebToken\RlssCandidateDetails.JsonWebToken.csproj" />
+    <ProjectReference Include="..\RlssCandidateDetails.RefreshToken\RlssCandidateDetails.RefreshToken.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Update="Database\dbInishalize\dbInishalizationCode.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

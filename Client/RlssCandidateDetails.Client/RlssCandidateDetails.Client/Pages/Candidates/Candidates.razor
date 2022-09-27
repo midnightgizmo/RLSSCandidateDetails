@@ -1,12 +1,14 @@
-﻿@using RlssCandidateDetails.Client.Classes.RenderFragments;
+﻿@using Microsoft.AspNetCore.Authorization
+@using RlssCandidateDetails.Client.Classes.RenderFragments;
 @using RlssCandidateDetails.Client.Models.Server.ResponseData
 @using RlssCandidateDetails.Client.ViewModels;
 @using RlssCandidateDetails.Client.Models;
 @using RlssCandidateDetails.Client.Classes.Server;
 @inject HttpClient httpClient;
+@inject AppSettings appSettings;
 
 @page "/candidates"
-
+@attribute [Authorize(Roles ="Admin")]
 
 <PageTitle>Candidates</PageTitle>
 
@@ -217,7 +219,7 @@
 		CandidateFilterData.Surname = _CandidatesVM.SurnameFilter;
 		CandidateFilterData.SocietyNumber = _CandidatesVM.SocietyNumber == null ? string.Empty : _CandidatesVM.SocietyNumber.ToString();
 
-		candidateCommunication = new CandidateCommunication(this.httpClient);
+		candidateCommunication = new CandidateCommunication(this.httpClient,appSettings);
 
 		// get a response back from the server
 		ServerResponse = await candidateCommunication.GetFilterdCandidateList(CandidateFilterData);
@@ -271,8 +273,8 @@
 	public async Task cmdDeleteCandidate_ConfirmClick(CandidatesVM_CandidateDeetails CandidateToDelete)
 	{
 		// send request to the server to delete the candidate from the database
-		CandidateCommunication candidateCommunication = new CandidateCommunication(this.httpClient);
-		ServerResponseDataBase ResponseData;
+		CandidateCommunication candidateCommunication = new CandidateCommunication(this.httpClient,appSettings);
+		ServerResponseData ResponseData;
 
 		ResponseData = await candidateCommunication.DeleteCandidate(CandidateToDelete.Id);
 
@@ -300,7 +302,7 @@
 
 	private async Task GetAllCandidates()
 	{
-		CandidateCommunication candidateCommunication = new CandidateCommunication(this.httpClient);
+		CandidateCommunication candidateCommunication = new CandidateCommunication(this.httpClient,appSettings);
 		SeverResponseListofCandidates responseData;
 
 		responseData = await candidateCommunication.GetAllCandidates();

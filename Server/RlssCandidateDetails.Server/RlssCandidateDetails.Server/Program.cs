@@ -1,4 +1,3 @@
-using RlssCandidateDetails.Server.Database.dbInishalize;
 using RlssCandidateDetails.Server.Middleware;
 using RlssCandidateDetails.Server.Models;
 
@@ -49,6 +48,14 @@ namespace RlssCandidateDetails.Server
                 app.UseCorsMiddleware();
             }
 
+            // my own middleware to respond to Pre Flight requests.
+            // neded for when the client wants to send back Json Web Tokens, It sends a pre flight
+            // request asking if the authorization header is allowed.
+            app.UsePreFlightRequestMiddleware();
+
+            // Custom Authentication Middle wear that determins if a user is logged in (authenticated)
+            // checks to see if the JWT is pressent and if so sets the users roles based on the roles value in the JWT
+            app.UseAuthenticationMiddleware();
             app.UseAuthorization();
 
 
@@ -63,12 +70,24 @@ namespace RlssCandidateDetails.Server
         /// <param name="appSettings">contains the locatin of where the database should be</param>
         private static void CreateDatabaseIfNotFound(AppSettings appSettings)
         {
-            dbCreator DBCreator = new dbCreator();
+            // create the main database
+            RlssCandidateDetails.Server.Database.dbInishalize.dbCreator DBCreator = new RlssCandidateDetails.Server.Database.dbInishalize.dbCreator();
 
             if(DBCreator.DoesDataBaseExist(appSettings.DataBaseLocation) == false)
             {
                 DBCreator.CreateDatabase(appSettings.DataBaseLocation);
             }
+
+            // Create the Refresh token database
+            RlssCandidateDetails.RefreshToken.Database.dbInishalize.dbCreator refreshTokenDB = new RefreshToken.Database.dbInishalize.dbCreator();
+
+            if(refreshTokenDB.DoesDataBaseExist(appSettings.TokenManagerDatabaseLocation) == false)
+            {
+                refreshTokenDB.CreateDatabase(appSettings.TokenManagerDatabaseLocation);
+            }
+
+
+
         }
     }
 }

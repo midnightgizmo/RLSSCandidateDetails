@@ -60,7 +60,7 @@ namespace RlssCandidateDetails.Server.Database.dbTables
             return ListOfCandidates;
         }
 
-        public CandidateDetails Select(int Id)
+        public CandidateDetails? Select(int Id)
         {
             CandidateDetails CandidatesDetails = null;
             StringBuilder sb = new StringBuilder();

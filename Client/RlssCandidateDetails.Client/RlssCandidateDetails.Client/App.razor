@@ -1,12 +1,39 @@
-﻿<Router AppAssembly="@typeof(App).Assembly">
-    <Found Context="routeData">
-        <RouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)" />
-        <FocusOnNavigate RouteData="@routeData" Selector="h1" />
-    </Found>
-    <NotFound>
-        <PageTitle>Not found</PageTitle>
-        <LayoutView Layout="@typeof(MainLayout)">
-            <p role="alert">Sorry, there's nothing at this address.</p>
-        </LayoutView>
-    </NotFound>
-</Router>
+﻿@using Microsoft.AspNetCore.Components.Authorization
+@using RlssCandidateDetails.Client.Components
+
+<CascadingAuthenticationState>
+    <Router AppAssembly="@typeof(App).Assembly">
+        <Found Context="routeData">
+            <!--<RouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)" />-->
+            <AuthorizeRouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)">
+                <NotAuthorized>
+                    
+                    <!--the user is logged in but does not have access to the page they are trying to view-->
+                    @if(context.User.Identity.IsAuthenticated == true)
+                    {
+                        <p>You are not authorized to access this resource.</p>
+                    }
+                    // the user is not logged in
+                    else
+                    {
+                        <!-- user is not Authorized so navigate to login page-->
+                        <RedirectComponent />
+                    }
+                    
+                </NotAuthorized>
+                <Authorizing>
+                    <h1>Authorization in progress</h1>
+                    <p>Only visible while authorization is in progress.</p>
+                </Authorizing>
+            </AuthorizeRouteView>
+            
+            <!--<FocusOnNavigate RouteData="@routeData" Selector="h1" />-->
+        </Found>
+        <NotFound>
+            <PageTitle>Not found</PageTitle>
+            <LayoutView Layout="@typeof(MainLayout)">
+                <p role="alert">Sorry, there's nothing at this address.</p>
+            </LayoutView>
+        </NotFound>
+    </Router>
+</CascadingAuthenticationState>

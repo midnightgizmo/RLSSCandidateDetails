@@ -1,0 +1,17 @@
+﻿BEGIN TRANSACTION;
+CREATE TABLE IF NOT EXISTS "TokenVersions" (
+	"RefreshToken_TokenID"	TEXT,
+	"VersionNumber"	INTEGER,
+	"HashedToken" TEXT, -- The Refresh tokens hashed Value (SHA256 hash)
+	"Salt" TEXT, -- The Salt Value used when encrypting/decrypting the token (in base64)
+	"IV" TEXT, -- The IV Value used when encrypting/decrypting the token (in base64)
+	CONSTRAINT "fk_TokenVersions_TokenID" FOREIGN KEY("RefreshToken_TokenID") REFERENCES "RefreshToken"("TokenID") ON DELETE CASCADE
+);
+CREATE TABLE IF NOT EXISTS "RefreshToken" (
+	"TokenID"	TEXT, -- a GUID that is generated in code
+	"CurrentVersionNumber"	INTEGER, -- Current version number we are on for the Refresh token
+	"UtcExpiryDate"	INTEGER,
+	"CustomerID"	INTEGER,
+	PRIMARY KEY("TokenID")
+);
+COMMIT;

@@ -1,4 +1,5 @@
-﻿@using RlssCandidateDetails.Client.Classes.RenderFragments;
+﻿@using Microsoft.AspNetCore.Authorization
+@using RlssCandidateDetails.Client.Classes.RenderFragments;
 @using RlssCandidateDetails.Client.Classes.Server;
 @using RlssCandidateDetails.Client.Components;
 @using RlssCandidateDetails.Client.Models;
@@ -7,8 +8,10 @@
 
 @inject NavigationManager NavManager;
 @inject HttpClient httpClient;
+@inject AppSettings appSettings;
 
 @page "/EditCandidate/{CandidateID:int}";
+@attribute [Authorize(Roles = "Admin")]
 
 
 <MainLayoutFragments>
@@ -93,7 +96,7 @@
 		// get the candidates details from the server and put the returned
 		// data into _CandidateDetailsVM
 		ServerResponseSingleCandidate responseData;
-		CandidateCommunication candidateCommunication = new CandidateCommunication(httpClient);
+		CandidateCommunication candidateCommunication = new CandidateCommunication(httpClient,appSettings);
 		responseData = await candidateCommunication.GetSingleCandidate(CandidateID);
 
 		// if we can't find the candidate details
@@ -169,7 +172,7 @@
 		candidate.SocietyNumber = candidateDetails.SocietyNumber.ToString();
 
 		// send off the new candidate details to the server
-		CandidateCommunication candidateCommunication = new CandidateCommunication(this.httpClient);
+		CandidateCommunication candidateCommunication = new CandidateCommunication(this.httpClient,appSettings);
 		return await candidateCommunication.UpdateCandidateDetails(candidate);
 
 		

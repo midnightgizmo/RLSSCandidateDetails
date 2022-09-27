@@ -1,6 +1,6 @@
 ﻿namespace RlssCandidateDetails.Client.Models.Server.ResponseData
 {
-	public class SeverResponseListofCandidates : ServerResponseDataBase
+	public class SeverResponseListofCandidates : ServerResponseData
 	{
 		public new List<Candidate> ReturnValue { get; set; }
 	}
