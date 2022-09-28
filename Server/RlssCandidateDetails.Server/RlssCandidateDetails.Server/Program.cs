@@ -1,5 +1,6 @@
 using RlssCandidateDetails.Server.Middleware;
 using RlssCandidateDetails.Server.Models;
+using System.Runtime.CompilerServices;
 
 namespace RlssCandidateDetails.Server
 {
@@ -26,6 +27,14 @@ namespace RlssCandidateDetails.Server
             // get an instance of the AppSettings. Normaly this will be accessed by Dependencey injection
             // but when we are in the start up code we need to access it another way
             AppSettings appSettings = app.Configuration.GetSection("AppSettings").Get<AppSettings>();
+
+            // creates a timer that periodicly removes Refresh tokens from the database that have expired
+
+            CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
+            // every 5 mins run a database query to remove all expired refresh tokens (this runs in another thread).
+            // When this app finishes we will call the CancellationTokenSource.Cancel() to tell the thread created
+            // in the below function to exit.
+            ConfigureRefreshTokenExpiryWatcher(appSettings, cancellationTokenSource.Token);
 
             if (app.Environment.IsDevelopment())
             {
@@ -61,7 +70,55 @@ namespace RlssCandidateDetails.Server
 
             app.MapControllers();
 
-            app.Run();
+            
+
+             app.Run();
+
+
+            cancellationTokenSource.Cancel();
+
+            // need a way to cancel the thread (thread.abort not supported any more), need to use cancelation tokens
+            // http://classport.blogspot.com/2014/05/cancellationtoken-and-threadsleep.html
+            //if (_RefreshTokenThread != null)
+            //    _RefreshTokenThread
+            
+        }
+
+        private static Thread _RefreshTokenThread;
+        /// <summary>
+        /// Creates a timer that periodicly removes Refresh tokens from the database that have expired
+        /// </summary>
+        /// <param name="appSettings">Contains the location of the Refresh Token Database</param>
+        /// <param name="Token">Token the thread will check to see when the thread should exit</param>
+        /// <exception cref="NotImplementedException">Containers the database location for the refresh token database</exception>
+        private static void ConfigureRefreshTokenExpiryWatcher(AppSettings appSettings, CancellationToken Token)
+        {
+            ParameterizedThreadStart ThreadMethod;
+            
+            
+            // create an anonymouse method that will delete expired refresh tokens every 5 mins.
+            // This will get called by another thread
+            ThreadMethod = delegate (object DataBaseLocation)
+            {
+                // set a time span of 10 mins
+                TimeSpan SleepTime = new TimeSpan(0, 10, 0);
+                // keep looping every 5 mins or until the Token has been cancelled
+                while(!Token.IsCancellationRequested)
+                {
+                    // remove all expired refresh tokens from the database
+                    RefreshToken.TokenManager.RemoveExpiredTokens((string)DataBaseLocation);
+                    // sleep for 5 mins unless the CcncellationToken has been signalled to cancel
+                    Token.WaitHandle.WaitOne(SleepTime);
+                    //System.Threading.Thread.Sleep(SleepTime);
+                }
+            };
+
+            // Create a new thread that will call the above ThreadMethod
+            _RefreshTokenThread = new Thread(ThreadMethod);
+            // make sure thread is background so it gets destryoed when the main thread finishes (program exits)
+            _RefreshTokenThread.IsBackground = true;
+            // start the thread passing in the Refresh Token database location
+            _RefreshTokenThread.Start(appSettings.TokenManagerDatabaseLocation);
         }
 
         /// <summary>
