@@ -314,6 +314,27 @@ namespace RlssCandidateDetails.RefreshToken
 
         }
 
+        #region public static methods
+        /// <summary>
+        /// Removes all tokens from the database that have expired
+        /// </summary>
+        public static void RemoveExpiredTokens(string DatabaseLocation)
+        {
+            dbSqliteConnection Con = new dbSqliteConnection();
+            dbRefreshToken RefreshTokenDb;
+
+            Con.OpenConnection(DatabaseLocation);
+            RefreshTokenDb = new dbRefreshToken(Con);
+
+            // delete all tokens that have an expired Date set to less than 5 mins ago
+            DateTime FiveMinsAgo = DateTime.UtcNow.Subtract(new TimeSpan(0, 5, 0));
+
+            RefreshTokenDb.DeleteExpiredTokens(FiveMinsAgo);
+
+            Con.CloseConnection();
+            
+        }
+        #endregion
 
 
         #region private methods

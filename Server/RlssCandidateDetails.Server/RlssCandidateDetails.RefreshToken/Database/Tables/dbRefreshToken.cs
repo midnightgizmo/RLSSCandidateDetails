@@ -1,6 +1,7 @@
 ﻿using Microsoft.Data.Sqlite;
 using RlssCandidateDetails.RefreshToken.Database;
 using RlssCandidateDetails.RefreshToken.Database.TableModels;
+using RlssCandidateDetails.RefreshToken.Models;
 using System.Text;
 
 namespace RlssCandidateDetails.RefreshToken.Database.Tables
@@ -327,6 +328,34 @@ namespace RlssCandidateDetails.RefreshToken.Database.Tables
                 // row did not get deleted
                 return false;
 
+        }
+
+        /// <summary>
+        /// Removes all tokens from the database that have an expiry date less than the passed in DateTime
+        /// </summary>
+        /// <param name="ExpiredDate">Remove all tokens that are less than this Value</param>
+        public void DeleteExpiredTokens(DateTime ExpiredDate)
+        {
+            StringBuilder sb = new StringBuilder();
+
+            sb.Append($"DELETE FROM {this.TableName} ");
+            sb.Append("WHERE UtcExpiryDate < :UtcExpiryDate");
+
+            // holds a list of parameters to insert into the sql query
+            List<SqliteParameter> parametersArray = new List<SqliteParameter>();
+            SqliteParameter aParameter;
+
+            aParameter = new SqliteParameter();
+            aParameter.ParameterName = ":UtcExpiryDate";
+            aParameter.Value = RefreshTokenDatabaseModel.ConvertDateTimeToUnixTimeStamp(ExpiredDate);
+            aParameter.DbType = System.Data.DbType.Int32;
+
+            parametersArray.Add(aParameter);
+
+            // execute the sql statment
+            this._con.ExecuteParameterizedNoneReader(sb.ToString(), parametersArray.ToArray());
+
+            return;
         }
 
         #endregion
